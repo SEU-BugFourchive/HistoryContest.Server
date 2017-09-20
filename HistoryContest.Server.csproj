@@ -33,17 +33,20 @@
   <Target Name="PublishAssetFiles" AfterTargets="$([System.String]::Concat(&quot;RunCommands:&quot;, $(OS)))">
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
-      <DistFiles Include="../wwwroot/**" />
-      <WikiFiles Include="../HistoryContest.Docs/**" />
+      <DistFiles Include="../wwwroot/**" Exclude="../wwwroot/.git" />
+      <WikiFiles Include="../HistoryContest.Docs/**" Exclude="../HistoryContest.Docs/.git" />
     </ItemGroup>
 
+    <Exec Command="echo @(DistFiles->'%(FullPath)')" />
+    <Exec Command="echo @(WikiFiles->'%(FullPath)')" />
+
     <ItemGroup>
-      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish);">
         <RelativePath>wwwroot/%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
       
-      <ResolvedFileToPublish Include="@(WikiFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+      <ResolvedFileToPublish Include="@(WikiFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish);">
         <RelativePath>HistoryContest.Docs/%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
