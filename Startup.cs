@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Swashbuckle.AspNetCore.Swagger;
@@ -174,11 +175,14 @@ namespace HistoryContest.Server
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                if (Program.UseWebpack)
                 {
-                    HotModuleReplacement = true,
-                    ProjectPath = Environment.ContentRootPath + "/HistoryContest.Client"
-                });
+                    app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
+                    {
+                        HotModuleReplacement = true,
+                        ProjectPath = Environment.ContentRootPath + "/HistoryContest.Client"
+                    });
+                }
             }
             else
             {
@@ -201,7 +205,6 @@ namespace HistoryContest.Server
             app.UseDefaultFiles(options);
             app.UseStaticFiles();
 
-/*
             // enable default url rewrite for wiki
             app.UseDefaultFiles(new DefaultFilesOptions()
             {
@@ -215,13 +218,11 @@ namespace HistoryContest.Server
                 FileProvider = new PhysicalFileProvider(Path.Combine(Environment.ContentRootPath, @"HistoryContest.Wiki")),
                 RequestPath = new PathString("/wiki")
             });
-*/
             #endregion
 
 
             #region Api document routes
             // Enable middleware to serve generated Swagger as a JSON endpoint.
-/*
             app.UseSwagger(c =>
             {
                 c.RouteTemplate = "api/{documentname}/swagger.json";
@@ -234,7 +235,6 @@ namespace HistoryContest.Server
                 c.RoutePrefix = "api";
                 c.SwaggerEndpoint("/api/seu-history-contest/swagger.json", "SEU History Contest API v1");
             });
-*/
             #endregion
 
 
@@ -283,16 +283,18 @@ namespace HistoryContest.Server
             {
                 // flush cache
                 var endpoints = RedisService.Connection.GetEndPoints();
-                RedisService.Connection.GetServer(endpoints.First()).FlushAllDatabases();
+                RedisService.Connection.GetServer(endpoints.First()).FlushDatabase(1);
 
+                unitOfWork.QuestionRepository.LoadQuestionsToCache();
+                unitOfWork.StudentRepository.LoadStudentsToCache();
+            }
+            if (Program.RegenerateSeed || Environment.IsDevelopment())
+            {
                 // Load cache
                 var questionSeedService = new QuestionSeedService(unitOfWork);
                 int scale = unitOfWork.Configuration.QuestionSeedScale;
                 var questionSeeds = questionSeedService.CreateNewSeeds(scale);
-
                 unitOfWork.Cache.QuestionSeeds().SetRange(questionSeeds, s => s.ID.ToString());
-                unitOfWork.QuestionRepository.LoadQuestionsToCache();
-                unitOfWork.StudentRepository.LoadStudentsToCache();
             }
             if (Environment.IsDevelopment())
             {

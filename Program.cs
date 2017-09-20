@@ -14,6 +14,8 @@ namespace HistoryContest.Server
     {
         public static bool FromMain { get; set; } = false;
         public static bool RefreshCache { get; set; } = false;
+        public static bool RegenerateSeed { get; set; } = false;
+        public static bool UseWebpack { get; set; } = false;
         public static int Port { get; set; } = 5000;
         public static string EnvironmentName { get; set; } = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
         public static string ContentRootPath { get; set; } = EnvironmentName.ToLowerInvariant() == "development" ?
@@ -72,6 +74,12 @@ namespace HistoryContest.Server
                     case "--refresh-cache":
                         RefreshCache = true;
                         break;
+                    case "--regenerate-seed":
+                        RegenerateSeed = true;
+                        break;
+                    case "--use-webpack":
+                        UseWebpack = true;
+                        break;
                     case "--parse-question-sql":
                         ++i;
                         parseSetting = new { Type = "question", Format = "sql", Path = args[i] };
@@ -93,6 +101,8 @@ namespace HistoryContest.Server
                             "-rb|--runbrowser               程序启动后运行默认浏览器打开网站。",
                             "-env|--environment <env>       设置程序运行环境。默认为Production。",
                             "--refresh-cache                清除并从数据库中重新加载缓存。Development环境下该开关无效，总是重新加载。",
+                            "--regenerate-seed              重新生成问题种子。Development环境下该开关无效，总是重新生成。",
+                            "--use-webpack                  开启Webpack Middleware。一般在前端使用vue时打开此项。",
                             "--parse-question-sql <path>    解析一个SQL格式问题集到json数据文件。",
                             "--parse-student-text <path>    解析一个文本格式学生信息集到json数据文件。",
                             "--parse-student-excel <path>   解析一个Excel格式学生信息集到json数据文件。"
