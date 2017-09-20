@@ -3,22 +3,24 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:5000/",
-      "sslPort": 44373
+      "applicationUrl": "http://localhost:47003/",
+      "sslPort": 0
     }
   },
   "profiles": {
-    "Run with IIS Express": {
+    "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "http://localhost:47003/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "Run with Kestrel": {
       "commandName": "Project",
-      "commandLineArgs": "--run-browser",
-      "launchBrowser": false,
+      "commandLineArgs": "-rb",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:5000/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

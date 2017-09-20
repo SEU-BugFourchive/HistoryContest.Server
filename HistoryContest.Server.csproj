@@ -24,17 +24,17 @@
   </ItemGroup>
   <Target Name="RunCommands:Windows_NT" AfterTargets="ComputeFilesToPublish" Condition="'$(OS)'=='Windows_NT'">
     <Exec Command="if not exist excel mkdir excel &amp; echo . &gt; excel/keep" WorkingDirectory="../wwwroot/" />
-    <Exec Command="powershell if(!(Test-Path ./index.html)) { cURL -Uri 'http://dynalon.github.io/mdwiki/index.html' -OutFile './index.html'; Unblock-File './index.html' }" WorkingDirectory="../HistoryContest.Wiki/" />
+    <!--<Exec Command="powershell if(!(Test-Path ./index.html)) { cURL -Uri 'http://dynalon.github.io/mdwiki/index.html' -OutFile './index.html'; Unblock-File './index.html' }" WorkingDirectory="../HistoryContest.Docs/wiki/" />-->
   </Target>
   <Target Name="RunCommands:Unix" AfterTargets="ComputeFilesToPublish" Condition="'$(OS)'=='Unix'">
     <Exec Command="if [ ! -d 'excel' ]; then mkdir excel; fi; cd excel; touch keep" WorkingDirectory="../wwwroot/" />
-    <Exec Command="if [ ! -f 'index.html' ]; then wget http://dynalon.github.io/mdwiki/index.html; fi" WorkingDirectory="../HistoryContest.Wiki/" />
+    <!--<Exec Command="if [ ! -f 'index.html' ]; then wget http://dynalon.github.io/mdwiki/index.html; fi" WorkingDirectory="../HistoryContestDocs/wiki/" />-->
   </Target>
   <Target Name="PublishAssetFiles" AfterTargets="$([System.String]::Concat(&quot;RunCommands:&quot;, $(OS)))">
     <!-- Include the newly-built files in the publish output -->
     <ItemGroup>
       <DistFiles Include="../wwwroot/**" />
-      <WikiFiles Include="../HistoryContest.Wiki/**" />
+      <WikiFiles Include="../HistoryContest.Docs/**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -44,7 +44,7 @@
       </ResolvedFileToPublish>
       
       <ResolvedFileToPublish Include="@(WikiFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
-        <RelativePath>HistoryContest.Wiki/%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
+        <RelativePath>HistoryContest.Docs/%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>

@@ -208,15 +208,29 @@ namespace HistoryContest.Server
             // enable default url rewrite for wiki
             app.UseDefaultFiles(new DefaultFilesOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Environment.ContentRootPath, @"HistoryContest.Wiki")),
+                FileProvider = new PhysicalFileProvider(Path.Combine(Environment.ContentRootPath, @"HistoryContest.Docs", "wiki")),
                 RequestPath = new PathString("/wiki")
             });
 
             // use wiki static files
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Environment.ContentRootPath, @"HistoryContest.Wiki")),
+                FileProvider = new PhysicalFileProvider(Path.Combine(Environment.ContentRootPath, @"HistoryContest.Docs", "wiki")),
                 RequestPath = new PathString("/wiki")
+            });
+
+            // defense default
+            app.UseDefaultFiles(new DefaultFilesOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Environment.ContentRootPath, @"HistoryContest.Docs", "defense")),
+                RequestPath = new PathString("/defense")
+            });
+
+            // use defense static files
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Environment.ContentRootPath, @"HistoryContest.Docs", "defense")),
+                RequestPath = new PathString("/defense")
             });
             #endregion
 
